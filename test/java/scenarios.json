@@ -3,7 +3,7 @@
         "image": "ubuntu:focal",
         "features": {
             "java": {
-                "version": "21",
+                "version": "latest",
                 "jdkDistro": "open"
             }
         }
@@ -12,7 +12,7 @@
         "image": "ubuntu:focal",
         "features": {
             "java": {
-                "version": "latest"
+                "version": "24"
             }
         }
     },
@@ -87,10 +87,10 @@
         }
     },
     "install_from_non_default_distro_rhel_family": {
-        "image": "almalinux:8",
+        "image": "ubuntu:focal",
         "features": {
             "java": {
-                "version": "21",
+                "version": "latest",
                 "jdkDistro": "open"
             }
         }
