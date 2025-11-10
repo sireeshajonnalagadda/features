@@ -80,10 +80,14 @@ jobs:
         shell: bash
         run: |
           wsl bash -lc 'set -e
+            echo "=== Starting Podman installation ==="
+            
             # Install Podman and dependencies
+            echo "Installing packages..."
             sudo apt-get update
             sudo apt-get install -y podman buildah python3-pip jq
-      
+            echo "Packages installed successfully"
+
             # Configure rootless containers
             sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 ubuntu
             
@@ -91,16 +95,18 @@ jobs:
             pip3 install --user podman-compose
       
             # Enable user services
-            systemctl --user enable --now podman.socket
-            sudo loginctl enable-linger ubuntu
-      
+            systemctl --user enable --now podman.socket || echo "Failed to enable podman.socket"
+            systemctl --user start podman.socket || echo "Failed to start podman.socket"
+            sudo loginctl enable-linger ubuntu || echo "Failed to enable linger"
+            echo "User services configuration complete"
+
             # Create Docker compatibility symlink (optional)
             sudo ln -sf /run/user/1000/podman/podman.sock /var/run/docker.sock || true
       
             # Verify installation
-            podman --version
-            buildah --version
-            ~/.local/bin/podman-compose --version || true
+            podman --version || echo "Podman version check failed"
+            buildah --version || echo "Buildah version check failed"
+            ~/.local/bin/podman-compose --version || echo "Podman-compose not found in PATH"
           '
       # Run feature tests.
       - name: Test features inside WSL
